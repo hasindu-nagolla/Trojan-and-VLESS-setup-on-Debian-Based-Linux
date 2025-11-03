@@ -276,11 +276,105 @@ Acquire::https::Proxy "socks5h://127.0.0.1:10808/";
 ```
 ## **Step 5: Browser Proxy Setup (Optional)**
 - Firefox: Preferences → Network Settings → Manual → SOCKS Host 127.0.0.1, Port 10808, SOCKS v5, and enable “Proxy DNS when using SOCKS v5”.
-- Chrome/Brave: start from terminal with:
+- Chrome/Brave: start from the terminal with:
   ```bash
   google-chrome --proxy-server="socks5://127.0.0.1:10808"
   brave-browser --proxy-server="socks5://127.0.0.1:10808"
   ```
+## **Step 6: (Optional) Autostart on Boot**
 
-👉 Happy...
+### **✅ OPTION A — Xray stays in your Home Folder**
+
+**Step 1 — Create the Systemd Service File**
+
+Step 1 — Create the Systemd Service File
+```bash
+sudo nano /etc/systemd/system/xray.service
+```
+Now paste this exactly, but replace yourusername with your real Linux username (ex: hasindu):
+```bash
+[Unit]
+Description=Xray-core VLESS Proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=yourusername
+WorkingDirectory=/home/yourusername/xray
+ExecStart=/home/yourusername/xray/xray run -c /home/yourusername/xray/config.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+Save & Exit:
+- Press CTRL + O → Enter
+- Press CTRL + X
+
+**Step 2 — Apply the Service & Enable Auto-Start**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable xray.service
+sudo systemctl start xray.service
+```
+**Step 3 — Check Status**
+```bash
+sudo systemctl status xray.service
+```
+You should see active (running) in green. Also confirm SOCKS proxy port:
+```bash
+ss -tlnp | grep 10808
+```
+If you see it listening → success ✅
+
+### **✅ OPTION B — Recommended (Move Xray to System Path)**
+
+**Step 1 — Move Xray to /opt/xray**
+```bash
+sudo mkdir -p /opt/xray
+sudo cp -a ~/xray/. /opt/xray/
+sudo chown -R root:root /opt/xray
+```
+**Step 2 — Create/Modify Service File**
+```bash
+sudo nano /etc/systemd/system/xray.service
+```
+```bash
+[Unit]
+Description=Xray-core VLESS Proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/xray
+ExecStart=/opt/xray/xray run -c /opt/xray/config.json
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+Save and exit
+
+**Step 3 — Enable Auto-Start**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable xray.service
+sudo systemctl start xray.service
+```
+
+**Step 4 — View Live Logs**
+```bash
+journalctl -u xray.service -f
+```
+This helps you see connection errors in real-time.
+
+
+
+
+
+# 👉 Happy...
 
