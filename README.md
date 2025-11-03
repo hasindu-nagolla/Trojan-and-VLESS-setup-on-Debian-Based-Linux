@@ -1,4 +1,6 @@
-# 🚀 Trojan-Go Setup on Ubuntu / Debian / Kali
+# 🚀 Vpn Clients Setup on Ubuntu Debian-Based Linux Distributions (System-Wide Configuration)
+
+# Trojan Client
 
 ## **Step 1: Download \& Prepare Trojan-Go**
 
@@ -175,6 +177,85 @@ cd ~/trojan-go-setup
 
 
 ***
+
+VLESS Client
+
+## **Step 1: Download and Install Xray-core**
+
+```bash
+sudo apt update
+sudo apt install wget unzip -y
+wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+unzip Xray-linux-64.zip -d xray
+cd xray
+chmod +x xray
+```
+
+## **Step 2: Create Your VLESS Config File**
+
+```bash
+nano config.json
+```
+Paste this configuration (based on your link):
+```bash
+{
+  "inbounds": [
+    {
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "your-domain",
+            "port": 443,
+            "users": [
+              {
+                "id": "vless-id",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "your-host",
+          "allowInsecure": true,
+          "alpn": []
+        }
+      }
+    }
+  ]
+}
+```
+## **Step 3: Start Xray-core**
+
+Run:
+```bash
+./xray run -c config.json
+```
+Leave this terminal running. Your SOCKS5 proxy is now at 127.0.0.1:10808.
+
+## **Step 4: System-wide Proxy Configuration**
+
+For terminal and system apps:
+```bash
+export http_proxy="socks5h://127.0.0.1:10808"
+export https_proxy="socks5h://127.0.0.1:10808"
+```
+
+
 
 👉 Happy...
 
