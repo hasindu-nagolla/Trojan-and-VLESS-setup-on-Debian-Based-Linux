@@ -249,13 +249,38 @@ Leave this terminal running. Your SOCKS5 proxy is now at 127.0.0.1:10808.
 
 ## **Step 4: System-wide Proxy Configuration**
 
-For terminal and system apps:
+### For terminal and system apps:
 ```bash
 export http_proxy="socks5h://127.0.0.1:10808"
 export https_proxy="socks5h://127.0.0.1:10808"
 ```
+### For persistent system-wide proxy:
 
+Edit /etc/environment and add:
+```bash
+http_proxy="socks5h://127.0.0.1:10808"
+https_proxy="socks5h://127.0.0.1:10808"
+ftp_proxy="socks5h://127.0.0.1:10808"
+no_proxy="localhost,127.0.0.1,::1"
+```
+Reboot or log out/in.
 
+### For package management (apt):
+```bash
+sudo nano /etc/apt/apt.conf.d/99proxy
+```
+paste:
+```bash
+Acquire::http::Proxy "socks5h://127.0.0.1:10808/";
+Acquire::https::Proxy "socks5h://127.0.0.1:10808/";
+```
+## **Step 5: Browser Proxy Setup (Optional)**
+- Firefox: Preferences → Network Settings → Manual → SOCKS Host 127.0.0.1, Port 10808, SOCKS v5, and enable “Proxy DNS when using SOCKS v5”.
+- Chrome/Brave: start from terminal with:
+  ```bash
+  google-chrome --proxy-server="socks5://127.0.0.1:10808"
+  brave-browser --proxy-server="socks5://127.0.0.1:10808"
+  ```
 
 👉 Happy...
 
