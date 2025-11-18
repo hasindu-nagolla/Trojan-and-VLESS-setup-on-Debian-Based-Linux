@@ -64,8 +64,6 @@ If error `"bind: address already in use"`:
 ```bash
 sudo fuser -k 1080/tcp
 ```
-
-
 ***
 
 ## **Step 4: Install \& Configure Privoxy**
@@ -178,7 +176,7 @@ cd ~/trojan-go-setup
 
 ***
 
-VLESS Client
+# VLESS Client
 
 ## **Step 1: Download and Install Xray-core**
 
